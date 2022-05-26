@@ -63,9 +63,13 @@ class StopWatch(Frame):
 # stop command for stopwatch     
     def Stop(self):                                    
         if self._running:
+            tempo = self._elapsedtime - self.prevLapHolder
             self.after_cancel(self._timer)            
             self._elapsedtime = time.time() - self._start    
             self._setTime(self._elapsedtime)
+            self.laps.append((self._setLapTime(self._elapsedtime)))
+            self.m.insert(END, self.laps[-1])
+            self.m.yview_moveto(1)
             self._running = 0
     
   # reset command  
