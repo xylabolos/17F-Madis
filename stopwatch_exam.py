@@ -14,23 +14,37 @@ class StopWatch(Frame):
         self.timestr = StringVar()
         self.makeWidgets()
         self.prevLapHolder = 0
+        self.lapcounter = 1
 
 # stopwatch widget design
-    def makeWidgets(self):                         
+    def makeWidgets(self):                     
         self.e = Entry(self)
-        TimerText = Label(self, text='\nTIME', fg= '#856ff8' )
-        TimerText.config(font=('Montserrat Extrabold',15))
-        TimerText.pack(fill=X, expand=NO, padx=100)
-        l = Label(self, textvariable=self.timestr)
+        l = Label(self, textvariable=self.timestr, fg= '#ffffff')
         self._setTime(self._elapsedtime)
-        l.pack(fill=X, expand=NO, padx=2)
-        l.config(font=('Montserrat Extrabold',20))
-        List = Label(self, text='')
-        List.pack(fill=X, expand=NO, pady=10, padx=90)
-        scrollbar = Scrollbar(self, orient=VERTICAL)
-        self.m = Listbox(self,selectmode=EXTENDED, height = 7, yscrollcommand=scrollbar.set)
+        l.pack(fill=X, expand=NO, padx=2, pady =30)
+        l.config(font=('Verdana Bold',30))
+        l.config(bg='#333333')
+        List = Label(self, text='', fg= '#664826')
+        List['background']='#333333'
+     
+  
+        List.pack(expand=NO, pady=90, padx=30)
+        scrollbar = Scrollbar(self, orient=VERTICAL, bg='#333333')
+        scrollbar.pack(side=RIGHT, fill=Y)
+        scrollbar.config(bg='#333333')
+        self.m = Listbox(self,selectmode=EXTENDED, height = 7, width = 50, yscrollcommand=scrollbar.set)
+        self.m.place(x=20, y=40)
+        self.m.config(font=('Verdana Bold',8), fg= ('#ffffff'))
+        self.m.config(bg='#333333')
+        self._setTime(self._elapsedtime)
+        self.minitimer = Label(text="00:00:00", font=('Verdana Bold', 14), fg= ('#ffffff'))
+        self.minitimer.place(x=150,y=160, anchor=CENTER)
+        self.minitimer.config(bg='#333333')
+        laplabel = Label(text='PREVIOUS LAP TIME:', font=('Verdana Bold', 10), bg= ('#333333'), fg= ('#ffffff')).place(x=150,y=140,anchor=CENTER)
+
+
+
         self.m.pack(side=LEFT, expand=10, padx=2)
-        self.m['background']='#856ff8'
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=RIGHT, fill=Y)
         
@@ -67,16 +81,21 @@ class StopWatch(Frame):
             self.after_cancel(self._timer)            
             self._elapsedtime = time.time() - self._start    
             self._setTime(self._elapsedtime)
-            self.laps.append((self._setLapTime(self._elapsedtime)))
+            self.laps.append("#" + f"{str(self.lapcounter)} {self._setLapTime(tempo)}  {self._setLapTime(self._elapsedtime)} ")
+            self.lapcounter += 1
             self.m.insert(END, self.laps[-1])
             self.m.yview_moveto(1)
             self._running = 0
     
   # reset command  
     def Reset(self):                                  
+        self.minitimer.config(text=((self._setLapTime(self._elapsedtime))))
         self._start = time.time()         
         self._elapsedtime = 0.0
+        self.prevLapHolder = 0
         self.laps = []   
+        self.lapcounter = 1
+        self.m.delete(0,END)
         self._setTime(self._elapsedtime)
         self.after_cancel(self._timer)            
         self._elapsedtime = time.time() - self._start    
@@ -85,7 +104,8 @@ class StopWatch(Frame):
     def Split(self):
         tempo = self._elapsedtime - self.prevLapHolder
         if self._running:
-            self.laps.append((self._setLapTime(self._elapsedtime)))
+            self.laps.append("#" + f"{str(self.lapcounter)} {self._setLapTime(tempo)} {self._setLapTime(self._elapsedtime)}")
+            self.lapcounter += 1
             self.m.insert(END, self.laps[-1])
             self.m.yview_moveto(1)
             self.prevLapHolder = self._elapsedtime
@@ -95,23 +115,29 @@ class StopWatch(Frame):
 def main():
     root = Tk()
     root.title('STOPWATCH')
-    root.geometry("300x500")
-    root.resizable(True,True)
+    root.geometry("300x400")
+    root['background']='#333333'
+    root.resizable(False,False)
     root.wm_attributes("-topmost", 1)
     sw = StopWatch(root)
     sw.pack(side=TOP)
-    Button1=tkinter.Button(text = "Start",command=sw.Start, width = 12, height = 2)
-    Button1.place(x=150, y=300, anchor='center')
-    Button1.config(font=('Montserrat Extrabold',9))
-    Button2=tkinter.Button(text = "Split",command=sw.Split, width = 12, height = 2)
-    Button2.place(x=150, y=350, anchor='center')
-    Button2.config(font=('Montserrat Extrabold',9))
-    Button3=tkinter.Button(text = "Stop",command=sw.Stop, width = 7, height = 2)
-    Button3.place(x=70, y=400, anchor='center')
-    Button4=tkinter.Button(text = "Reset", command=sw.Reset, width = 7, height = 2)
-    Button4.place(x=150, y=400, anchor='center')
-    Button5=tkinter.Button(text = "Exit",command=root.destroy, width = 7, height = 2)
-    Button5.place(x=230, y=400, anchor='center')
+    sw.config(bg='#333333')
+    Button1=tkinter.Button(text = "START", fg= '#ffffff', command=sw.Start, width = 10, height = 2)
+    Button1.place(x=100, y=220, anchor='center')
+    Button1.config(font=('Verdana Bold',9))
+    Button1['background']='#101214'
+    Button2=tkinter.Button(text = "SPLIT", fg= '#ffffff',command=sw.Split, width = 10, height = 2)
+    Button2.place(x=200, y=220, anchor='center')
+    Button2.config(font=('Verdana Bold',9))
+    Button2['background']='#101214'
+    Button3=tkinter.Button(text = "STOP",fg= '#ffffff',command=sw.Stop, width = 10, height = 2)
+    Button3.place(x=100, y=270, anchor='center')
+    Button3.config(font=('Verdana Bold',9))
+    Button3['background']='#101214'
+    Button4=tkinter.Button(text = "RESET", fg= '#ffffff', command=sw.Reset, width = 10, height = 2)
+    Button4.place(x=200, y=270, anchor='center')
+    Button4.config(font=('Verdana Bold',9))
+    Button4['background']='#101214'
     root.mainloop()
 
     
