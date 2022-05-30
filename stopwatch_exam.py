@@ -111,7 +111,7 @@ class StopWatch(Frame):
             self.prevLapHolder = self._elapsedtime
         
     
-# stopwatch functions and buttons             
+# stopwatch functions and other buttons             
 def main():
     root = Tk()
     root.title('STOPWATCH')
