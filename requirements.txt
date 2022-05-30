@@ -1,0 +1,4 @@
+certifi==2022.5.18.1
+pywin32-ctypes==0.2.0
+requests==2.27.1
+sv-ttk==0.1
